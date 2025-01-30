@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nachhaltigkeits Challenge</title>
+    <style>
+         body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        header {
+            background-color: #003b5c;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 2em;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .menu-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        .menu {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background-color: #003b5c;
+            color: white;
+            width: 100%;
+            height: 50%;
+            overflow-y: auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            padding-top: 50px;
+            text-align: center;
+            transition: 0.3s ease;
+        }
+
+        .menu a {
+            display: block;
+            text-decoration: none;
+            color: white;
+            font-size: 1.5em;
+            padding: 20px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .menu a:hover {
+            background-color: #f4f4f4;
+            color: #003b5c;
+        }
+
+        .menu-btn-active {
+            transform: rotate(180deg);
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+        }
+
+        input[type="text"], input[type="password"], input[type="email"] {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        button {
+            width: 90%;
+            padding: 10px;
+            background-color: #ffcc00;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #e6b800;
+        }
+
+        .info-text {
+            margin: 20px 0;
+            font-size: 1em;
+            color: #555;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .register-link a {
+            color: #003b5c;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        #game {
+            display: none;
+        }
+
+        .challenge-column {
+            width: 45%;
+            margin: 10px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .challenge-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .challenge-item {
+            padding: 12px;
+            margin: 12px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .challenge-item.done {
+            background-color: #d4edda;
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        .player-overview {
+            margin-top: 40px;
+            width: 90%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        /* Modal-Stil */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 80%;
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 30px;
+            color: white;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Neuer Stil für den Challenge-Button mit der Farbe #fcd100 */
+        .challenge-button {
+            display: inline-block;
+            background-color: #fcd100; /* Commerzbank-Gelb (mit #fcd100) */
+            color: white;
+            font-size: 0.9em;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .challenge-button:hover {
+            background-color: #e6b800; /* Etwas dunkler für Hover-Effekt */
+        }
+
+        .hidden-input {
+            display: none; /* Input bleibt unsichtbar */
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    Nachhaltigkeits Challenge
+</header>
+
+<div id="auth-container" class="container">
+    <div id="login-form-container" class="form-container">
+        <h2>Willkommen zur Nachhaltigkeits Challenge</h2>
+        <p class="info-text">Melde dich an, um fortzufahren:</p>
+        <form id="login-form">
+            <input type="text" id="username" placeholder="Benutzername" required>
+            <input type="password" id="password" placeholder="Passwort" required>
+            <button type="submit">Anmelden</button>
+        </form>
+    </div>
+</div>
+
+<div id="game" class="container">
+    <div class="challenge-column" id="to-do-column">
+        <h2>Noch zu erledigende Aufgaben</h2>
+        <ul class="challenge-list" id="challenge-list"></ul>
+    </div>
+    <div class="challenge-column" id="done-column">
+        <h2>Erledigte Aufgaben</h2>
+        <ul class="challenge-list" id="done-list"></ul>
+    </div>
+    <div class="player-overview">
+        <h2>Spieler Übersicht</h2>
+        <table id="player-table">
+            <thead>
+                <tr>
+                    <th>Platz</th>
+                    <th>Spieler</th>
+                    <th>Erledigte Aufgaben</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<div id="imageModal" class="modal">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeModal()">×</button>
+        <img id="modalImage" src="" alt="Vergrößertes Bild">
+    </div>
+</div>
+
+<script>
+    const API_URL = 'https://your-server.com/api'; // Setzen Sie Ihre Server-URL hier ein
+    let validUsers = [
+        { username: 'GreenBanker', password: 'Green4Service', completedChallenges: 0 },
+        { username: 'EcoInnovator', password: '2develope.Eco', completedChallenges: 0 },
+        { username: 'GlobalGreenFlow', password: 'Global/TsInter', completedChallenges: 0 },
+        { username: 'EcoBuilder', password: 'KeBeCe/7', completedChallenges: 0 },
+        { username: 'SustainableBiz', password: 'zentrale.8C', completedChallenges: 0 },
+        { username: 'EcoAdvisor', password: 'PrivUnK99', completedChallenges: 0 },
+        { username: 'GreenCompliance', password: 'KY/CoBa', completedChallenges: 0 },
+        { username: 'EcoGuardian', password: 'Risk.Game8000', completedChallenges: 0 },
+        { username: 'EcoSupporter', password: 'leihe3000SC', completedChallenges: 0 },
+        { username: 'GreenTrader', password: 'PayurBliis5', completedChallenges: 0 },
+        { username: 'EcoInvestor', password: 'InvestINcObA', completedChallenges: 0 },
+        { username: 'SustainabilityOps', password: 'MyOpS63', completedChallenges: 0 }
+    ];
+
+   const challenges = [
+        { id: 1, task: "Nutze die Treppe anstatt den Aufzug" },
+        { id: 2, task: "Stelle eine Pflanze in dein Büro für einen grüneren Alltag (vergiss aber nicht sie zu gießen!)" },
+        { id: 3, task: "Bedrucke doppelseitig und verwende Recyclingpapier" }, 
+	  { id: 4, task: "Bilde eine Fahrgemeinschaft um den CO2 Ausstoß zu reduzieren " },
+        { id: 5, task: "Verzichte eine Woche lang auf Einwegprodukte (keine Einwegbecher oder Flaschen)" },
+        { id: 6, task: "Nutze bei deinem nächsten Einkauf eine Stofftasche statt Plastiktüten" },
+        { id: 7, task: "Nutze kein Auto für Strecken unter 5km (gehe zu Fuß oder fahre mit dem Fahrrad, nutze zur Not ÖPNV)" },
+        { id: 8, task: "Produziere eine Woche lang so wenig Müll wie möglich (kaufe unverpackte Lebensmittel)" },
+        { id: 9, task: "Trenne Müll konsequent & vermeide Lebensmittelverschwendung" }, 
+        { id: 10, task: "Ernähre dich für drei Tage vegetarisch (es gibt sehr gute pflanzliche Alternativen wie z.B. Tofu)" },
+        { id: 11, task: "Achte darauf, regionale und saisonale Produkte zu kaufen" },
+        { id: 12, task: "Schalte immer das Licht aus, sobald du den Raum verlässt" }, 
+        { id: 13, task: "Kaufe ein Monat lang keine neuen Kleidungsstücke (kaufe, wenn nötig, Second-Hand statt Fast Fashion" },
+        { id: 14, task: "Verwalte Dokumente und Notizen digital statt ausgedruckt" },
+        { id: 15, task: "Baue wenn möglich Homeoffice-Tage ein, um Fahrten zu sparen" },     
+        { id: 16, task: "Schalte deinen Computer und alle Monitore nach Feierabend komplett aus" },
+        { id: 17, task: "Lösche alte, unnötige Emails regelmäßig, um an Speicherplatz und Energie zu sparen" },
+        { id: 18, task: "Schalte die Spülmaschine in der Büroküche erst an, wenn sie voll ist" },                     
+        { id: 19, task: "Verbringe jeden Tag eine kurze Pause draußen (es verschafft dir mehr Bewusstsein für unsere Natur und Umwelt)" },
+        { id: 20, task: "Benutze die Spartaste bei der Toilettenspülung" },
+        { id: 21, task: "Trinke eine Woche lang keinen Kaffee oder Tee (wegen hohem Wasserverbrauch)" }, 
+	  { id: 22, task: "Kaufe eine Woche lang keine Tiefkühlprodukte" },
+        { id: 23, task: "Verwerte zwei Wochen lang Lebensmittelreste kreativ" },
+        { id: 24, task: "Verzichte mindestens drei Tage lang auf industriell verarbeitete Lebensmittel" },
+        { id: 25, task: "Verzichte auf Alufolie und Frischhaltefolie und nutze wiederverwendbare Alternativen (z.B. Tupperware)" },
+        { id: 26, task: "Bestelle einen Monat lang nicht online" },
+        { id: 27, task: "Verwende eine Woche lang keine Papierhandtücher" }, 
+        { id: 28, task: "Informiere dich über Nachhaltigkeit und teile dein Wissen (es gibt viele Dokus z.B. in der ARD Mediathek" },
+        { id: 29, task: "Probiere nachhaltige Apps aus (z.B. Too Good To Go)" },
+        { id: 30, task: "Benutze eine Woche lang bewusst weniger Social Media" }, 
+        { id: 31, task: "Schalte die Heizung aus, wenn du das Fenster öffnest" },
+        { id: 32, task: "Nimm eine Woche lang eine eigene Lunchbox mit, anstatt in der Cafeteria zu essen " },
+       
+    ]; 
+
+    document.getElementById('login-form').addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        const user = validUsers.find(user => user.username === username && user.password === password);
+        if (user) {
+            await syncProgressWithServer(user.username); // Synchronisieren nach Anmeldung
+            showGameArea(user);
+        } else {
+            alert('Ungültiger Benutzername oder Passwort');
+        }
+    });
+
+    function showGameArea(user) {
+        document.getElementById('auth-container').style.display = 'none';
+        document.getElementById('game').style.display = 'block';
+        document.querySelector('header').innerHTML = `Hallo, ${user.username}!`;
+
+        loadChallenges();
+        loadPlayerTable();
+    }
+
+    function loadChallenges() {
+        const challengeList = document.getElementById('challenge-list');
+        challenges.forEach(challenge => {
+            const listItem = document.createElement('li');
+            listItem.classList.add('challenge-item');
+            listItem.innerHTML = `
+                ${challenge.task} 
+                <label class="challenge-button">
+                    Challenge erledigt
+                    <input type="file" class="hidden-input" id="upload-${challenge.id}" onchange="completeChallenge(${challenge.id})">
+                </label>
+            `;
+            challengeList.appendChild(listItem);
+        });
+    }
+
+    async function completeChallenge(challengeId) {
+        const fileInput = document.getElementById(`upload-${challengeId}`);
+        const file = fileInput.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = async function (e) {
+                const challenge = challenges.find(c => c.id === challengeId);
+                alert(`Herausforderung '${challenge.task}' erfolgreich abgeschlossen!`);
+                moveChallengeToDone(challengeId, e.target.result);
+
+                const user = validUsers[0];
+                user.completedChallenges++;
+                saveProgressLocally(user.username);
+                await syncProgressWithServer(user.username); // Fortschritt synchronisieren
+                loadPlayerTable();
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function moveChallengeToDone(challengeId, imageData) {
+        const challengeItem = document.querySelector(`#upload-${challengeId}`).closest('.challenge-item');
+        challengeItem.classList.add('done');
+        const doneList = document.getElementById('done-list');
+        doneList.appendChild(challengeItem);
+    }
+
+    function loadPlayerTable() {
+        const tbody = document.querySelector('#player-table tbody');
+        tbody.innerHTML = '';
+        validUsers.sort((a, b) => b.completedChallenges - a.completedChallenges);
+        validUsers.forEach((user, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${user.username}</td>
+                <td>${user.completedChallenges}</td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    function openImage(imageUrl) {
+        document.getElementById('modalImage').src = imageUrl;
+        document.getElementById('imageModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('imageModal').style.display = 'none';
+    }
+
+    // Lokale Speicherung
+    function saveProgressLocally(username) {
+        const user = validUsers.find(user => user.username === username);
+        localStorage.setItem('userProgress', JSON.stringify(user));
+    }
+
+    function loadProgressLocally(username) {
+        const savedData = JSON.parse(localStorage.getItem('userProgress'));
+        if (savedData && savedData.username === username) {
+            const user = validUsers.find(user => user.username === username);
+            user.completedChallenges = savedData.completedChallenges;
+        }
+    }
+
+    // Server-Synchronisation
+    async function syncProgressWithServer(username) {
+        const user = validUsers.find(user => user.username === username);
+        const localProgress = JSON.parse(localStorage.getItem('userProgress')) || user;
+
+        try {
+            const response = await fetch(`${API_URL}/sync`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, progress: localProgress })
+            });
+
+            if (response.ok) {
+                const serverData = await response.json();
+                user.completedChallenges = serverData.completedChallenges;
+                saveProgressLocally(username); // Fortschritt lokal aktualisieren
+                console.log('Synchronisation erfolgreich');
+            } else {
+                console.error('Fehler bei der Synchronisation mit dem Server');
+            }
+        } catch (error) {
+            console.error('Netzwerkfehler:', error);
+        }
+    }
+</script>
+
+</body>
+</html>
